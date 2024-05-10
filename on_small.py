@@ -1,6 +1,7 @@
 from pyspark.sql import SparkSession
 from pyspark.sql.functions import col, expr
 from pyspark.ml.feature import MinHashLSH
+import os
 
 def main(spark, userID):
     '''Main routine for Lab Solutions
