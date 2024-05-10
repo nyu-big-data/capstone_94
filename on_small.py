@@ -10,6 +10,11 @@ import os
 # spark-submit --deploy-mode client on_small.py
 from pyspark.sql import SparkSession
 from pyspark.sql.functions import col, countDistinct, first, count, max, avg
+from pyspark.sql.functions import collect_set
+from pyspark.ml.feature import MinHashLSH
+from pyspark.ml.linalg import Vectors
+from pyspark.ml.feature import VectorAssembler
+# Group data by user and collect rated movieIds into a set
 import pyspark.sql.functions as F
 
 def main(spark, userID):
@@ -25,6 +30,21 @@ def main(spark, userID):
     ratings = spark.read.csv(f'hdfs:/user/{userID}/ratings.csv', 
                              schema='userId INT, movieId INT, rating FLOAT, timestamp INT')
     # ratings = spark.read.csv(f'hdfs:/user/{userID}/ratings.csv', header=True, inferSchema=True)
+
+    user_movies = ratings_df.groupBy("userId").agg(collect_set("movieId").alias("movies"))
+    
+    # Convert movie sets to sparse vectors
+    assembler = VectorAssembler(inputCols=["movies"], outputCol="features")
+    features_df = assembler.transform(user_movies)
+    
+    # Apply MinHashLSH
+    mh = MinHashLSH(inputCol="features", outputCol="hashes", numHashTables=5)
+    model = mh.fit(features_df)
+    similar_users = model.approxSimilarityJoin(features_df, features_df, threshold=0.6, distCol="JaccardDistance")
+    
+    top_pairs = similar_users.orderBy("JaccardDistance").select("datasetA.userId", "datasetB.userId", "JaccardDistance").limit(100)
+    top_pairs.show()
+
 
   
   
