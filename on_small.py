@@ -8,10 +8,11 @@ Usage:
 import os
 from pyspark.sql import SparkSession
 from pyspark.sql.functions import collect_list
-from pyspark.ml.linalg import Vectors
+from pyspark.ml.linalg import Vectors, VectorUDT
 from pyspark.ml.feature import MinHashLSH
 from pyspark.sql.types import ArrayType, IntegerType
 from pyspark.sql.functions import udf
+
 
 def main(spark, userID):
     '''Main routine for Lab Solutions
