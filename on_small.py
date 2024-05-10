@@ -7,7 +7,7 @@ Usage:
 import os
 
 # And pyspark.sql to get the spark session
-# spark-submit --deploy-mode client on_small.py
+##### spark-submit --deploy-mode client on_small.py #######
 from pyspark.sql import SparkSession
 from pyspark.sql.functions import col, countDistinct, first, count, max, avg
 from pyspark.sql.functions import collect_set
