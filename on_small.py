@@ -31,7 +31,7 @@ def main(spark, userID):
                              schema='userId INT, movieId INT, rating FLOAT, timestamp INT')
     # ratings = spark.read.csv(f'hdfs:/user/{userID}/ratings.csv', header=True, inferSchema=True)
 
-    user_movies = ratings_df.groupBy("userId").agg(collect_set("movieId").alias("movies"))
+    user_movies = ratings.groupBy("userId").agg(collect_set("movieId").alias("movies"))
     
     # Convert movie sets to sparse vectors
     assembler = VectorAssembler(inputCols=["movies"], outputCol="features")
