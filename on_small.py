@@ -63,14 +63,14 @@ def main(spark, userID):
     ratings.show()
 
 if __name__ == "__main__":
-    # spark = SparkSession.builder.appName('capstone').getOrCreate()
-    spark = SparkSession.builder \
-    .appName('capstone') \
-    .config('spark.executor.memory', '4g') \
-    .config('spark.driver.memory', '4g') \
-    .config('spark.sql.shuffle.partitions', '100') \
-    .config('spark.executor.memoryOverhead', '512m') \
-    .getOrCreate()
+    spark = SparkSession.builder.appName('capstone').getOrCreate()
+    # spark = SparkSession.builder \
+    # .appName('capstone') \
+    # .config('spark.executor.memory', '4g') \
+    # .config('spark.driver.memory', '4g') \
+    # .config('spark.sql.shuffle.partitions', '100') \
+    # .config('spark.executor.memoryOverhead', '512m') \
+    # .getOrCreate()
 
 
     
