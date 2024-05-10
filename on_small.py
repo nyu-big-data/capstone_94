@@ -31,12 +31,20 @@ def main(spark, userID):
     movie_index = {row.movieId: idx for idx, row in enumerate(movies)}
     
     # UDF to convert list of movieIds to sparse vector
+    # def movies_to_vector(movies):
+    #     indices = [movie_index[movie] for movie in movies if movie in movie_index]
+    #     values = [1] * len(indices)  # All elements are 1 (presence of the movie)
+    #     return Vectors.sparse(len(movie_index), indices, values)
+    
+    # movies_to_vector_udf = udf(movies_to_vector, Vectors.typeName())
+    # UDF to convert list of movieIds to sparse vector
     def movies_to_vector(movies):
         indices = [movie_index[movie] for movie in movies if movie in movie_index]
         values = [1] * len(indices)  # All elements are 1 (presence of the movie)
         return Vectors.sparse(len(movie_index), indices, values)
     
-    movies_to_vector_udf = udf(movies_to_vector, Vectors.typeName())
+    # Register the UDF with the correct return type
+    movies_to_vector_udf = udf(movies_to_vector, VectorUDT())
 
     # Group by userId and aggregate movieIds into a list, then convert to vector
     user_movies = ratings.groupBy("userId").agg(collect_list("movieId").alias("movies"))
