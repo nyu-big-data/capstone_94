@@ -1,6 +1,10 @@
+# from pyspark.sql import SparkSession
+# from pyspark.sql.functions import col, expr
+# from pyspark.ml.feature import MinHashLSH
 from pyspark.sql import SparkSession
-from pyspark.sql.functions import col, expr
-from pyspark.ml.feature import MinHashLSH
+from pyspark.sql.functions import col
+from pyspark.ml.feature import MinHashLSH, VectorAssembler
+
 import os
 
 def main(spark, userID):
