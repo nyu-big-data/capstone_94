@@ -17,8 +17,21 @@ def main(spark, userID):
     print('Dataframe loading and SQL query')
 
     # Load the data
+    # Assuming 'ratings' has been loaded
+    # Filter out movies rated by fewer users to reduce dimensionality
     ratings = spark.read.csv(f'hdfs:/user/{userID}/ratings.csv', 
                              schema='userId INT, movieId INT, rating FLOAT, timestamp INT')
+    
+    movie_counts = ratings.groupBy("movieId").count()
+    popular_movies = movie_counts.filter(col("count") > 20)  # Define a suitable threshold
+    
+    # Join with ratings to filter out less popular movies
+    filtered_ratings = ratings.join(popular_movies, "movieId", "inner")
+    
+    # Continue with your pivot and vector assembly as before
+    user_movie_matrix = filtered_ratings.groupBy("userId").pivot("movieId").count().na.fill(0)
+
+    
 
     # Create a user-movie matrix where each entry is 1 if the user rated the movie
     user_movie_matrix = ratings.groupBy("userId").pivot("movieId").count().na.fill(0)
