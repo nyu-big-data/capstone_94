@@ -34,7 +34,7 @@ def main(spark, userID):
     
 
     # Create a user-movie matrix where each entry is 1 if the user rated the movie
-    user_movie_matrix = ratings.groupBy("userId").pivot("movieId").count().na.fill(0)
+    # user_movie_matrix = ratings.groupBy("userId").pivot("movieId").count().na.fill(0)
 
     print('Post groupby')
 
