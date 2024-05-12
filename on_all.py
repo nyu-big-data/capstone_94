@@ -23,10 +23,10 @@ def main(spark, userID):
 
       # Load the data
     path = f'hdfs:/user/{userID}/'
-    ratings = spark.read_csv(path + 'ratings.csv', header=True, inferSchema=True)
-    tags = spark.read_csv(path + 'tags.csv', header=True, inferSchema=True)
-    movies = spark.read_csv(path + 'movies.csv', header=True, inferSchema=True)
-    links = spark.read_csv(path + 'links.csv', header=True, inferSchema=True)
+    ratings = spark.read.csv(path + 'ratings.csv', header=True, inferSchema=True)
+    tags = spark.read.csv(path + 'tags.csv', header=True, inferSchema=True)
+    movies = spark.read.csv(path + 'movies.csv', header=True, inferSchema=True)
+    links = spark.read.csv(path + 'links.csv', header=True, inferSchema=True)
   
     # Merging DataFrames
     movie_ratings = ratings.join(movies.select("movieId", "title"), "movieId", "inner")
