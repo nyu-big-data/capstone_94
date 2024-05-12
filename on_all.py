@@ -10,6 +10,9 @@ from pyspark.ml.linalg import Vectors
 from pyspark.ml.feature import BucketedRandomProjectionLSH, MinHashLSHModel
 from pyspark.ml.feature import HashingTF, IDF, Tokenizer
 
+from pyspark.sql.functions import rand
+
+
 import random
 from pyspark.sql.functions import monotonically_increasing_id
 
@@ -79,8 +82,8 @@ def main(spark, userID):
                                         col("datasetB.userId").alias("userId2"), 
                                         col("JaccardDistance")).orderBy("JaccardDistance", ascending=False).limit(100)
     top_100.show()
-    top_100.write.csv(path + "top_100_pairs.csv", mode="overwrite")
-    top_100.write.csv("top_100_pairs.csv", mode="overwrite")
+    # top_100.write.csv(path + "top_100_pairs.csv", mode="overwrite")
+    # top_100.write.csv("top_100_pairs.csv", mode="overwrite")
 
     print("Start selecting random pairs")
     # Sample 200 users (since some might be duplicates, we sample slightly more than needed)
