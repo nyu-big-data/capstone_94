@@ -26,6 +26,8 @@ def main(spark, userID):
 
       # Load the data
     path = f'hdfs:/user/{userID}/'
+    t_path = path + "top_100_pairs.csv"
+    print(t_path)
     ratings = spark.read.csv(path + 'ratings.csv', header=True, inferSchema=True)
     tags = spark.read.csv(path + 'tags.csv', header=True, inferSchema=True)
     movies = spark.read.csv(path + 'movies.csv', header=True, inferSchema=True)
