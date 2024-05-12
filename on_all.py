@@ -10,6 +10,9 @@ from pyspark.ml.linalg import Vectors
 from pyspark.ml.feature import BucketedRandomProjectionLSH, MinHashLSHModel
 from pyspark.ml.feature import HashingTF, IDF, Tokenizer
 
+import random
+from pyspark.sql.functions import monotonically_increasing_id
+
 import os
 
 def main(spark, userID):
@@ -69,8 +72,25 @@ def main(spark, userID):
     similar = similar.filter("datasetA.userId != datasetB.userId")
     similar = similar.dropDuplicates(["userId1", "userId2"])
     print("Continue filtering")
-    similar = similar.select("datasetA.userId", "datasetB.userId", "JaccardDistance").orderBy("JaccardDistance", ascending=False).limit(100)
-    similar.show()
+    top_100 = similar.select("datasetA.userId", "datasetB.userId", "JaccardDistance").orderBy("JaccardDistance", ascending=False).limit(100)
+    top_100.show()
+    top_100.write.csv(path + "top_100_pairs.csv", mode="overwrite")
+    top_100.write.csv("top_100_pairs.csv", mode="overwrite")
+
+    print("Start selecting random pairs")
+    # Sample 200 users (since some might be duplicates, we sample slightly more than needed)
+    sampled_sims = similar.orderBy(rand()).limit(100)
+
+    print("100 pairs selected")
+    
+    avg_jaccard_top_100 = top_100.agg(avg("JaccardDistance")).first()[0]
+    print("Average Jaccard Distance for Top 100", avg_jaccard_top_100)
+    avg_jaccard_random_100 = random_100.agg(avg("JaccardDistance")).first()[0]
+    print("Average Jaccard Distance for Random 100", avg_jaccard_random_100)
+    print("Done")
+        
+    
+    # Create DataFrame from these pairs
 
 if __name__ == "__main__":
     spark = SparkSession.builder.appName('capstone').getOrCreate()
