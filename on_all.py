@@ -4,7 +4,7 @@
 from pyspark.sql import SparkSession
 from pyspark.sql.functions import col
 from pyspark.ml.feature import MinHashLSH, VectorAssembler
-from pyspark.sql.functions import lit
+from pyspark.sql.functions import lit, col, when, least, greatest
 
 from pyspark.ml.linalg import Vectors
 from pyspark.ml.feature import BucketedRandomProjectionLSH, MinHashLSHModel
@@ -27,17 +27,26 @@ def main(spark, userID):
     tags = spark.read.csv(path + 'tags.csv', header=True, inferSchema=True)
     movies = spark.read.csv(path + 'movies.csv', header=True, inferSchema=True)
     links = spark.read.csv(path + 'links.csv', header=True, inferSchema=True)
+
+    print("Data Loaded")
   
     # Merging DataFrames
     movie_ratings = ratings.join(movies.select("movieId", "title"), "movieId", "inner")
     movie_tags = tags.join(movies.select("movieId", "title"), "movieId", "inner")
 
+    print("Finished joining")
+
     rate_history = movie_ratings.union(movie_tags)
+
+    print("Joining")
   
     # Pivot table to get user-movie matrix
     rate_history_pt = rate_history.groupBy("userId").pivot("title").agg(lit(1)).na.fill(0)
     tokenizer = Tokenizer(inputCol="title", outputCol="tokens")
+    print("Finished Tokenizing")
     hashingTF = HashingTF(numFeatures=1024, inputCol="tokens", outputCol="features")
+
+    print("Transform")
     rate_history_tf = hashingTF.transform(tokenizer.transform(rate_history))
     
     mh = MinHashLSH(inputCol="features", outputCol="hashes", numHashTables=5)
