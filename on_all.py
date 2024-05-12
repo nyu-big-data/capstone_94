@@ -49,14 +49,11 @@ def main(spark, userID):
     # Find similar pairs
     similar = model.approxSimilarityJoin(rate_history_hashed, rate_history_hashed, 0.6, distCol="JaccardDistance")
 
-    similar = similar.withColumn("userId1", least(col("datasetA.userId"), col("datasetB.userId"))) \
-                             .withColumn("userId2", greatest(col("datasetA.userId"), col("datasetB.userId")))
+    similar = similar.withColumn("userId1", least(col("datasetA.userId"), col("datasetB.userId"))).withColumn("userId2", greatest(col("datasetA.userId"), col("datasetB.userId")))
 
-    similar = similar.filter("datasetA.userId != datasetB.userId") \
-                      .dropDuplicates(["userId1", "userId2"]) \ 
-                      .select("datasetA.userId", "datasetB.userId", "JaccardDistance") \
-                      .orderBy("JaccardDistance", ascending=False) \
-                      .limit(100)
+    similar = similar.filter("datasetA.userId != datasetB.userId")
+    similar = similar.dropDuplicates(["userId1", "userId2"])
+    similar = similar.select("datasetA.userId", "datasetB.userId", "JaccardDistance").orderBy("JaccardDistance", ascending=False).limit(100)
     similar.show()
 
 if __name__ == "__main__":
