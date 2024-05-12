@@ -29,9 +29,7 @@ def main(spark, userID):
     filtered_ratings = ratings.join(popular_movies, "movieId", "inner")
     
     # Continue with your pivot and vector assembly as before
-    user_movie_matrix = filtered_ratings.groupBy("userId").pivot("movieId").count().na.fill(0)
-
-    
+    user_movie_matrix = filtered_ratings.groupBy("userId").pivot("movieId").count().na.fill(0)   
 
     # Create a user-movie matrix where each entry is 1 if the user rated the movie
     # user_movie_matrix = ratings.groupBy("userId").pivot("movieId").count().na.fill(0)
@@ -55,7 +53,7 @@ def main(spark, userID):
     # Find similarity using MinHashLSH
     print("LSH dataset with hash tables:")
     similar_users = model.approxSimilarityJoin(user_features, user_features, threshold=1.0, distCol="JaccardDistance").filter("datasetA.userId != datasetB.userId")
-    top_pairs = similar_users.orderBy("JaccardDistance").select("datasetA.userId", "datasetB.userId", "JaccardDistance").limit(100)
+    top_pairs = similar_users.orderBy(col("JaccardDistance").desc(), a).select("datasetA.userId", "datasetB.userId", "JaccardDistance").limit(100)
     top_pairs.show()
 
     print('Printing ratings with specified schema')
