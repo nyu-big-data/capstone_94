@@ -53,7 +53,7 @@ def main(spark, userID):
     # Find similarity using MinHashLSH
     print("LSH dataset with hash tables:")
     similar_users = model.approxSimilarityJoin(user_features, user_features, threshold=1.0, distCol="JaccardDistance").filter("datasetA.userId != datasetB.userId")
-    top_pairs = similar_users.orderBy(col("JaccardDistance").desc(), a).select("datasetA.userId", "datasetB.userId", "JaccardDistance").limit(100)
+    top_pairs = similar_users.orderBy(col("JaccardDistance").desc()).select("datasetA.userId", "datasetB.userId", "JaccardDistance").limit(100)
     top_pairs.show()
 
 if __name__ == "__main__":
