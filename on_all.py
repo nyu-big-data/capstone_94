@@ -73,7 +73,7 @@ def main(spark, userID):
     similar = similar.dropDuplicates(["userId1", "userId2"])
     similar = similar.withColumnRenamed("userId", "userIdA").withColumnRenamed("userId", "userIdB")
     print("Continue filtering")
-    top_100 = similar_filtered.select(col("datasetA.userId").alias("userId1"), 
+    top_100 = similar.select(col("datasetA.userId").alias("userId1"), 
                                         col("datasetB.userId").alias("userId2"), 
                                         col("JaccardDistance")).orderBy("JaccardDistance", ascending=False).limit(100)
     top_100.show()
