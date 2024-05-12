@@ -56,10 +56,6 @@ def main(spark, userID):
     top_pairs = similar_users.orderBy(col("JaccardDistance").desc(), a).select("datasetA.userId", "datasetB.userId", "JaccardDistance").limit(100)
     top_pairs.show()
 
-    print('Printing ratings with specified schema')
-    ratings.printSchema()
-    ratings.show()
-
 if __name__ == "__main__":
     spark = SparkSession.builder.appName('capstone').getOrCreate()
     # spark = SparkSession.builder \
