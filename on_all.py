@@ -48,20 +48,27 @@ def main(spark, userID):
 
     print("Transform")
     rate_history_tf = hashingTF.transform(tokenizer.transform(rate_history))
+
+    print("miHash Fitting")
     
     mh = MinHashLSH(inputCol="features", outputCol="hashes", numHashTables=5)
     model = mh.fit(rate_history_tf)
+
     
+    print("Finished fitting start transforming")
     # Transform features into binary hash buckets
     rate_history_hashed = model.transform(rate_history_tf)
     
     # Find similar pairs
+    print("Approximate Similarity Join")
     similar = model.approxSimilarityJoin(rate_history_hashed, rate_history_hashed, 0.6, distCol="JaccardDistance")
 
+    print("Filtering on Similar")
     similar = similar.withColumn("userId1", least(col("datasetA.userId"), col("datasetB.userId"))).withColumn("userId2", greatest(col("datasetA.userId"), col("datasetB.userId")))
 
     similar = similar.filter("datasetA.userId != datasetB.userId")
     similar = similar.dropDuplicates(["userId1", "userId2"])
+    print("Continue filtering")
     similar = similar.select("datasetA.userId", "datasetB.userId", "JaccardDistance").orderBy("JaccardDistance", ascending=False).limit(100)
     similar.show()
 
