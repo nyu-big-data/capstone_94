@@ -32,12 +32,9 @@ def main(spark, userID):
   
     # Load training and validation data
     path = f'hdfs:/user/{userID}/'
-    train = pd.read_csv(path + 'train.csv')
-    validation = pd.read_csv(path + 'validation.csv')
-    train_data = [Row(userId=int(row['userId']), movieId=int(row['movieId']), rating=float(row['rating'])) for _, row in train.iterrows()]
-    validation_data = [Row(userId=int(row['userId']), movieId=int(row['movieId']), rating=float(row['rating'])) for _, row in validation.iterrows()]
-    train_df = spark.createDataFrame(train_data)
-    validation_df = spark.createDataFrame(validation_data)
+
+    train_df = spark.read.csv(path + "train.csv")
+    validation_df = spark.createDataFrame(path + "validation.csv")
     
     # Configure and train ALS model
     als = ALS(userCol='userId', itemCol='movieId', ratingCol='rating', nonnegative=True, implicitPrefs=False, coldStartStrategy="drop")
@@ -80,9 +77,9 @@ def main(spark, userID):
     best_als_model = tune_als(train_df, validation_df)
 
     # Load test data
-    test = pd.read_csv('test.csv')
-    test_data = [Row(userId=int(row['userId']), movieId=int(row['movieId']), rating=float(row['rating'])) for _, row in test.iterrows()]
-    test_df = spark.createDataFrame(test_data)
+    # test = pd.read_csv('test.csv')
+    # test_data = [Row(userId=int(row['userId']), movieId=int(row['movieId']), rating=float(row['rating'])) for _, row in test.iterrows()]
+    test_df = spark.read.csv(path + "test.csv")
     
     # Make predictions on test set using the best ALS model
     test_predictions = best_als_model.transform(test_df)
