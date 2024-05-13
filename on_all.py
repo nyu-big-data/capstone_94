@@ -87,7 +87,7 @@ def main(spark, userID):
 
     print("Start selecting random pairs")
     # Sample 200 users (since some might be duplicates, we sample slightly more than needed)
-    sampled_sims = similar.orderBy(rand()).limit(100)
+    random_100 = similar.orderBy(rand()).limit(100)
 
     print("100 pairs selected")
     
