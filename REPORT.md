@@ -26,3 +26,27 @@
 - |Reform School Gir...|       5.0|
 - |Scooby-Doo! Abrac...|       5.0|
 - +--------------------+----------+
+
+
+- Dataframe loading and SQL query
+- Validation Root-Mean-Square Error (RMSE): 0.9223407943835541
+- Rank: 5, Regularization: 0.01, Validation RMSE: 1.0456472257478628
+- Rank: 5, Regularization: 0.1, Validation RMSE: 0.9210528817245397
+- Rank: 5, Regularization: 1.0, Validation RMSE: 1.3343259924465753
+- Rank: 5, Regularization: 10.0, Validation RMSE: 3.6673397418096076
+- Rank: 10, Regularization: 0.01, Validation RMSE: 1.1034618719763254
+- Rank: 10, Regularization: 0.1, Validation RMSE: 0.9223407943835541
+- Rank: 10, Regularization: 1.0, Validation RMSE: 1.3343273491276393
+- Rank: 10, Regularization: 10.0, Validation RMSE: 3.6673397418096076
+- Rank: 15, Regularization: 0.01, Validation RMSE: 1.1308962824615387
+- Rank: 15, Regularization: 0.1, Validation RMSE: 0.9217413060696134
+- Rank: 15, Regularization: 1.0, Validation RMSE: 1.3343278243720127
+- Rank: 15, Regularization: 10.0, Validation RMSE: 3.6673397418096076
+- Rank: 20, Regularization: 0.01, Validation RMSE: 1.1479256198181194
+- Rank: 20, Regularization: 0.1, Validation RMSE: 0.9206251341827478
+- Rank: 20, Regularization: 1.0, Validation RMSE: 1.3343260035890714
+- Rank: 20, Regularization: 10.0, Validation RMSE: 3.6673397418096076
+- Best Rank: 20, Best Regularization Parameter: 0.1, Best RMSE: 0.9206251341827478
+- Test Root-Mean-Square Error (RMSE): 0.9138640787358804
+- Precision@5: 0.29055724274313155
+- Recall@5: 0.29055724274313155
