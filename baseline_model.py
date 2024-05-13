@@ -51,7 +51,7 @@ def main(spark, userID):
         return top_movies
     
     # Example usage
-    top_10_movies = get_top_n_movies(10)
+    top_10_movies = get_top_n_movies(20)
     print("Top 10 Popular Movies:")
     top_10_movies.show()
   
