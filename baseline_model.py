@@ -4,7 +4,7 @@
 from pyspark.sql import SparkSession
 from pyspark.sql.functions import col
 from pyspark.ml.feature import MinHashLSH, VectorAssembler
-from pyspark.sql.functions import lit, col, when, least, greatest
+from pyspark.sql.functions import lit, col, when, least, greatest, avg
 
 from pyspark.ml.linalg import Vectors
 from pyspark.ml.feature import BucketedRandomProjectionLSH, MinHashLSHModel
