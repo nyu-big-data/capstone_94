@@ -4,7 +4,7 @@
 from pyspark.sql import SparkSession
 from pyspark.sql.functions import col
 from pyspark.ml.feature import MinHashLSH, VectorAssembler
-from pyspark.sql.functions import lit, col, when, least, greatest
+from pyspark.sql.functions import lit, col, when, least, greatest, avg
 
 from pyspark.ml.linalg import Vectors
 from pyspark.ml.feature import BucketedRandomProjectionLSH, MinHashLSHModel
@@ -81,7 +81,7 @@ def main(spark, userID):
     top_100 = similar.select(col("datasetA.userId").alias("userId1"), 
                                         col("datasetB.userId").alias("userId2"), 
                                         col("JaccardDistance")).orderBy("JaccardDistance", ascending=False).limit(100)
-    top_100.show()
+    # top_100.show()
     # top_100.write.csv(path + "top_100_pairs.csv", mode="overwrite")
     # top_100.write.csv("top_100_pairs.csv", mode="overwrite")
 
