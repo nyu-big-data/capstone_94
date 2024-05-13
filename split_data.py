@@ -32,13 +32,13 @@ def main(spark, userID):
     print("Splitting Validation")
     train, validation = train.randomSplit([0.8, 0.2], seed=0)
     train.write.csv(path + "train.csv", mode="overwrite")
-    train.write.csv("train.csv", mode="overwrite")
+    # train.write.csv("train.csv", mode="overwrite")
 
     validation.write.csv(path + "validation.csv", mode="overwrite")
-    validation.write.csv("validation.csv", mode="overwrite")
+    # validation.write.csv("validation.csv", mode="overwrite")
 
     test.write.csv(path + "test.csv", mode="overwrite")
-    test.write.csv("test.csv", mode="overwrite")
+    # test.write.csv("test.csv", mode="overwrite")
 
     
   
