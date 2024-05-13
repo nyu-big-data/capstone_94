@@ -29,9 +29,11 @@ def main(spark, userID):
     train = spark.read.csv(path + 'train.csv', header=True, inferSchema=True)
     print("Got Train")
     movies = spark.read.csv(path + 'movies.csv', header=True, inferSchema=True)
+    print("Bouta Join")
 
     # Merge ratings with movie information on 'movieId'
     train_ratings_movies = train.join(movies.select("movieId", "title"), on="movieId", how="inner")
+    print("Joined bout to get top 10")
     
     # Popularity-Based Recommendation: Top N Movies
     def get_top_n_movies(n=10):
