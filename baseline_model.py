@@ -39,7 +39,7 @@ def main(spark, userID):
 
     # Merge ratings with movie information on 'movieId'
     train_ratings_movies = train.join(movies.select("movieId", "title"), on="movieId", how="inner")
-    print("Joined bout to get top 10")
+    print("Joined bout to get top 30")
     
     # Popularity-Based Recommendation: Top N Movies
     def get_top_n_movies(n=10):
@@ -47,13 +47,13 @@ def main(spark, userID):
         top_movies = train_ratings_movies.groupBy("title") \
                                          .agg(avg("rating").alias("avg_rating")) \
                                          .orderBy(col("avg_rating").desc()) \
-                                         .limit(n)
+                                         .limit(n).orderBy(col("title"))
         return top_movies
     
     # Example usage
-    top_10_movies = get_top_n_movies(20)
-    print("Top 10 Popular Movies:")
-    top_10_movies.show()
+    top_30_movies = get_top_n_movies(30)
+    print("Top 30 Popular Movies:")
+    top_30_movies.show()
   
     
     
