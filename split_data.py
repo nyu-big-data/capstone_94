@@ -31,14 +31,10 @@ def main(spark, userID):
     train, test = ratings.randomSplit([0.7, 0.3], seed=0)
     print("Splitting Validation")
     train, validation = train.randomSplit([0.8, 0.2], seed=0)
-    train.write.csv(path + "train.csv", mode="overwrite")
-    # train.write.csv("train.csv", mode="overwrite")
-
-    validation.write.csv(path + "validation.csv", mode="overwrite")
-    # validation.write.csv("validation.csv", mode="overwrite")
-
-    test.write.csv(path + "test.csv", mode="overwrite")
-    # test.write.csv("test.csv", mode="overwrite")
+    
+    train.write.option("header", "true").csv(path + "train.csv", mode="overwrite")
+    validation.write.option("header", "true").csv(path + "validation.csv", mode="overwrite")
+    test.write.option("header", "true").csv(path + "test.csv", mode="overwrite")
 
     
   
