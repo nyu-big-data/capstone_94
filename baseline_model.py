@@ -29,6 +29,12 @@ def main(spark, userID):
     train = spark.read.csv(path + 'train.csv', header=True, inferSchema=True)
     print("Got Train")
     movies = spark.read.csv(path + 'movies.csv', header=True, inferSchema=True)
+    print("Schema of train DataFrame:")
+    train.printSchema()
+    
+    print("Schema of movies DataFrame:")
+    movies.printSchema()
+    
     print("Bouta Join")
 
     # Merge ratings with movie information on 'movieId'
