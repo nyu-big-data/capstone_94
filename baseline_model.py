@@ -9,6 +9,7 @@ def main(spark, userID):
     train = spark.read.csv(path + 'train.csv', header=True, inferSchema=True)
     movies = spark.read.csv(path + 'movies.csv', header=True, inferSchema=True)
     test_df = spark.read.csv(path + "test.csv", header=True, inferSchema=True)
+    print("CSV Read")
 
     # Merge ratings with movie information on 'movieId'
     train_ratings_movies = train.join(movies.select("movieId", "title"), on="movieId", how="inner")
@@ -23,6 +24,7 @@ def main(spark, userID):
     # Get top 30 popular movies
     top_30_movies = get_top_n_movies(30)
     top_30_movieIds = [row['movieId'] for row in top_30_movies.collect()]
+    print("Movies ID Retrieved")
 
     # Create a DataFrame of recommended items for each user
     recommended_items_per_user = test_df.select("userId").distinct() \
@@ -42,6 +44,7 @@ def main(spark, userID):
         return sum_precisions / len(relevant_set) if relevant_set else 0.0
 
     average_precision_udf = udf(average_precision, DoubleType())
+    print("AP Calculated")
 
     # Collecting relevant items per user
     relevant_items_per_user = test_df.filter(col("rating") >= 4) \
@@ -50,6 +53,7 @@ def main(spark, userID):
 
     # Join to compare relevant and recommended items
     precision_recall_df = relevant_items_per_user.join(recommended_items_per_user, "userId", "inner")
+    print("More Join")
     precision_recall_df = precision_recall_df.withColumn(
         "average_precision",
         average_precision_udf(col("relevant_items"), col("recommended_items"))
