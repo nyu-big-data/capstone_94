@@ -76,7 +76,10 @@ def main(spark, userID):
         return best_model
     
     # Tune ALS model parameters and obtain the best model
-    best_als_model = tune_als(train_df, validation_df)
+    
+    # best_als_model = tune_als(train_df, validation_df)
+    als = ALS(userCol='userId', itemCol='movieId', ratingCol='rating', rank=20, regParam=0.1, nonnegative=True, implicitPrefs=False, coldStartStrategy="drop")
+    best_als_model = als.fit(train_df)
 
     # Load test data
     # test = pd.read_csv('test.csv')
