@@ -1,6 +1,10 @@
 - Average Jaccard Distance for Top 100: 0.5717857142857138
 - Average Jaccard Distance for Random 100: 0.09769841269841269
 
+- Popularity Based Model
+- Mean Average Precision (MAP): 1.8035459416992854e-05
+- Average Precision@10: 0.0006611570247933885
+- Average Recall@10: 6.155355721137302e-05
 - Top 20
 - +--------------------+----------+
 - |               title|avg_rating|
@@ -27,7 +31,7 @@
 - |Scooby-Doo! Abrac...|       5.0|
 - +--------------------+----------+
 
-
+- Latent Factor Model
 - Dataframe loading and SQL query
 - Validation Root-Mean-Square Error (RMSE): 0.9223407943835541
 - Rank: 5, Regularization: 0.01, Validation RMSE: 1.0456472257478628
