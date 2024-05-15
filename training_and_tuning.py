@@ -78,6 +78,7 @@ def main(spark, userID):
     # Tune ALS model parameters and obtain the best model
     
     # best_als_model = tune_als(train_df, validation_df)
+    print("Fitting ALS")
     als = ALS(userCol='userId', itemCol='movieId', ratingCol='rating', rank=20, regParam=0.1, nonnegative=True, implicitPrefs=False, coldStartStrategy="drop")
     best_als_model = als.fit(train_df)
 
@@ -89,9 +90,9 @@ def main(spark, userID):
     # Make predictions on test set using the best ALS model
     test_predictions = best_als_model.transform(test_df)
     
-    # Evaluate the best ALS model on test set
-    test_rmse = evaluator.evaluate(test_predictions)
-    print(f"Test Root-Mean-Square Error (RMSE): {test_rmse}")
+    # # Evaluate the best ALS model on test set
+    # test_rmse = evaluator.evaluate(test_predictions)
+    # print(f"Test Root-Mean-Square Error (RMSE): {test_rmse}")
     
     # Function to evaluate MAP, Precision@k, and Recall@k
     def evaluate_ranking_metrics(predictions, k=10):
