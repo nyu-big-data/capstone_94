@@ -20,6 +20,7 @@ from pyspark.ml.feature import HashingTF, IDF, Tokenizer
 import random
 from pyspark.sql.functions import monotonically_increasing_id
 from pyspark.sql.functions import col
+import pyspark.sql.functions as F
 
 import os
 
