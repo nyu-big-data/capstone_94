@@ -44,13 +44,23 @@ def main(spark, userID):
     print("Joined bout to get top 30")
     
     # Popularity-Based Recommendation: Top N Movies
+    # def get_top_n_movies(n=10):
+    #     # Group by movie titles, calculate average rating, and order by rating descending
+    #     top_movies = train_ratings_movies.groupBy("title") \
+    #                                      .agg(avg("rating").alias("avg_rating")) \
+    #                                      .orderBy(col("avg_rating").desc()) \
+    #                                      .limit(n).orderBy(col("title"))
+    #     return top_movies
     def get_top_n_movies(n=10):
-        # Group by movie titles, calculate average rating, and order by rating descending
-        top_movies = train_ratings_movies.groupBy("title") \
-                                         .agg(avg("rating").alias("avg_rating")) \
-                                         .orderBy(col("avg_rating").desc()) \
-                                         .limit(n).orderBy(col("title"))
-        return top_movies
+    # First, get the average ratings and count of ratings for each movie
+    movie_ratings = train_ratings_movies.groupBy("movieId", "title") \
+                                        .agg(avg("rating").alias("avg_rating"), count("rating").alias("num_ratings"))
+    
+    # Order by average rating and number of ratings (to break ties) in descending order
+    top_movies = movie_ratings.orderBy(col("avg_rating").desc(), col("num_ratings").desc()) \
+                              .limit(n)
+    
+    return top_movies
     
     # Example usage
     top_30_movies = get_top_n_movies(30)
