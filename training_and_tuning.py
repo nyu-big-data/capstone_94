@@ -7,7 +7,7 @@ from pyspark.sql.window import Window
 from pyspark.sql.functions import expr
 from pyspark.sql.functions import col
 from pyspark.ml.feature import MinHashLSH, VectorAssembler
-from pyspark.sql.functions import lit, col, when, least, greatest, count as count_
+from pyspark.sql.functions import lit, col, when, least, greatest, count 
 
 from pyspark.ml.recommendation import ALS
 from pyspark.ml.evaluation import RegressionEvaluator
@@ -105,10 +105,10 @@ def main(spark, userID):
         per_user_predicted = per_user_predicted.filter(col('rank') <= k)
 
         # True Positives at k
-        true_positives_at_k = per_user_predicted.filter((col('rating') >= 4) & (col('prediction') >= 4)).groupBy('userId').count_()
+        true_positives_at_k = per_user_predicted.filter((col('rating') >= 4) & (col('prediction') >= 4)).groupBy('userId').count()
 
         # Relevant items in test set
-        relevant_items = predictions.filter(col('rating') >= 4).groupBy('userId').count_()
+        relevant_items = predictions.filter(col('rating') >= 4).groupBy('userId').count()
 
         # Precision at k: (True Positives at k) / k
         precision_at_k = true_positives_at_k.join(relevant_items, 'userId', 'inner') \
