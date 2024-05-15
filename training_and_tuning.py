@@ -65,14 +65,14 @@ def main(spark, userID):
                 model = als.fit(train_df)
                 predictions = model.transform(validation_df)
                 rmse = evaluator.evaluate(predictions)
-                print(f"Rank: {rank}, Regularization: {reg_param}, Validation RMSE: {rmse}")
+                #print(f"Rank: {rank}, Regularization: {reg_param}, Validation RMSE: {rmse}")
                 if rmse < best_rmse:
                     best_rmse = rmse
                     best_model = model
                     best_rank = rank
                     best_reg_param = reg_param
     
-        print(f"Best Rank: {best_rank}, Best Regularization Parameter: {best_reg_param}, Best RMSE: {best_rmse}")
+        #print(f"Best Rank: {best_rank}, Best Regularization Parameter: {best_reg_param}, Best RMSE: {best_rmse}")
         return best_model
     
     # Tune ALS model parameters and obtain the best model
