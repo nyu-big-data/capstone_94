@@ -38,17 +38,17 @@ def main(spark, userID):
     train_df = spark.read.csv(path + "train.csv", header=True, inferSchema=True)
     validation_df = spark.read.csv(path + "validation.csv", header=True, inferSchema=True)
     
-    # Configure and train ALS model
-    als = ALS(userCol='userId', itemCol='movieId', ratingCol='rating', nonnegative=True, implicitPrefs=False, coldStartStrategy="drop")
-    als_model = als.fit(train_df)
+    # # Configure and train ALS model
+    # als = ALS(userCol='userId', itemCol='movieId', ratingCol='rating', nonnegative=True, implicitPrefs=False, coldStartStrategy="drop")
+    # als_model = als.fit(train_df)
     
-    # Make predictions on validation set
-    validation_predictions = als_model.transform(validation_df)
+    # # Make predictions on validation set
+    # validation_predictions = als_model.transform(validation_df)
     
-    # Evaluate the model on validation set
-    evaluator = RegressionEvaluator(metricName='rmse', labelCol='rating', predictionCol='prediction')
-    rmse = evaluator.evaluate(validation_predictions)
-    print(f"Validation Root-Mean-Square Error (RMSE): {rmse}")
+    # # Evaluate the model on validation set
+    # evaluator = RegressionEvaluator(metricName='rmse', labelCol='rating', predictionCol='prediction')
+    # rmse = evaluator.evaluate(validation_predictions)
+    # print(f"Validation Root-Mean-Square Error (RMSE): {rmse}")
     
     # Tune ALS model parameters (rank and regularization)
     def tune_als(train_df, validation_df):
