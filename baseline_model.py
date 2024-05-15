@@ -52,15 +52,15 @@ def main(spark, userID):
     #                                      .limit(n).orderBy(col("title"))
     #     return top_movies
     def get_top_n_movies(n=10):
-    # First, get the average ratings and count of ratings for each movie
-    movie_ratings = train_ratings_movies.groupBy("movieId", "title") \
-                                        .agg(avg("rating").alias("avg_rating"), count("rating").alias("num_ratings"))
-    
-    # Order by average rating and number of ratings (to break ties) in descending order
-    top_movies = movie_ratings.orderBy(col("avg_rating").desc(), col("num_ratings").desc()) \
-                              .limit(n)
-    
-    return top_movies
+        # First, get the average ratings and count of ratings for each movie
+        movie_ratings = train_ratings_movies.groupBy("movieId", "title") \
+                                            .agg(avg("rating").alias("avg_rating"), count("rating").alias("num_ratings"))
+        
+        # Order by average rating and number of ratings (to break ties) in descending order
+        top_movies = movie_ratings.orderBy(col("avg_rating").desc(), col("num_ratings").desc()) \
+                                  .limit(n)
+        
+        return top_movies
     
     # Example usage
     top_30_movies = get_top_n_movies(30)
