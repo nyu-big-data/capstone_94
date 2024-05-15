@@ -3,6 +3,8 @@
 # from pyspark.ml.feature import MinHashLSH
 import pandas as pd
 from pyspark.sql import SparkSession
+from pyspark.sql.window import Window
+from pyspark.sql.functions import expr
 from pyspark.sql.functions import col
 from pyspark.ml.feature import MinHashLSH, VectorAssembler
 from pyspark.sql.functions import lit, col, when, least, greatest
@@ -88,18 +90,43 @@ def main(spark, userID):
     test_rmse = evaluator.evaluate(test_predictions)
     print(f"Test Root-Mean-Square Error (RMSE): {test_rmse}")
     
-    def precision_recall_at_k(predictions, k):
-        predictions = predictions.orderBy(col('prediction').desc())
-        total_relevant = predictions.filter(predictions.rating >= 4).count()
-        recommended_and_relevant_count = predictions.filter((predictions.rating >= 4) & (predictions.prediction >= 4)).count()
-        precision = recommended_and_relevant_count / total_relevant if total_relevant != 0 else 0
-        recall = recommended_and_relevant_count / total_relevant if total_relevant != 0 else 0
-        return precision, recall
-    
-    precision, recall = precision_recall_at_k(test_predictions, 5)
-    
-    print(f"Precision@5: {precision}")
-    print(f"Recall@5: {recall}")
+    # Function to evaluate MAP, Precision@k, and Recall@k
+    def evaluate_ranking_metrics(predictions, k=10):
+        # Generate ranking for each user
+        windowSpec = Window.partitionBy('userId').orderBy(col('prediction').desc())
+        per_user_predicted = predictions.withColumn("rank", F.rank().over(windowSpec))
+
+        # Get top k predictions
+        per_user_predicted = per_user_predicted.filter(col('rank') <= k)
+
+        # True Positives at k
+        true_positives_at_k = per_user_predicted.filter((col('rating') >= 4) & (col('prediction') >= 4)).groupBy('userId').count()
+
+        # Relevant items in test set
+        relevant_items = predictions.filter(col('rating') >= 4).groupBy('userId').count()
+
+        # Precision at k: (True Positives at k) / k
+        precision_at_k = true_positives_at_k.join(relevant_items, 'userId', 'inner') \
+                                            .selectExpr('userId', 'count / {} as precision_at_k'.format(k))
+
+        # Recall at k: (True Positives at k) / (Relevant items)
+        recall_at_k = true_positives_at_k.join(relevant_items, 'userId', 'inner') \
+                                         .selectExpr('userId', 'count / count as recall_at_k')
+
+        # Mean Average Precision
+        # Need to consider all predictions, not just top k
+        per_user_predictions = predictions.withColumn("rank", F.rank().over(windowSpec))
+        average_precision_expr = "SUM(CASE WHEN rating >= 4 THEN 1.0 ELSE 0 END) / MAX(rank)"
+        per_user_map = per_user_predictions.groupBy("userId").agg(expr(average_precision_expr).alias("AP"))
+        mean_average_precision = per_user_map.selectExpr("AVG(AP) as MAP").first()['MAP']
+
+        return precision_at_k, recall_at_k, mean_average_precision
+
+    # Use the evaluation function
+    precision_at_k, recall_at_k, mean_average_precision = evaluate_ranking_metrics(test_predictions, k=10)
+    print(f"Precision@10: {precision_at_k.collect()}")
+    print(f"Recall@10: {recall_at_k.collect()}")
+    print(f"Mean Average Precision (MAP): {mean_average_precision}")
     
         
 
