@@ -4,8 +4,7 @@
 from pyspark.sql import SparkSession
 from pyspark.sql.functions import col
 from pyspark.ml.feature import MinHashLSH, VectorAssembler
-from pyspark.sql.functions import lit, col, when, least, greatest, avg
-from pyspark.sql.functions import col, collect_list, lit, udf, expr
+from pyspark.sql.functions import lit, col, when, least, greatest, avg, collect_list, udf, expr, count as _count
 from pyspark.sql.types import ArrayType, IntegerType, FloatType, DoubleType, StructType, StructField
 
 from pyspark.ml.linalg import Vectors
@@ -54,10 +53,10 @@ def main(spark, userID):
     def get_top_n_movies(n=10):
         # First, get the average ratings and count of ratings for each movie
         movie_ratings = train_ratings_movies.groupBy("movieId", "title") \
-                                            .agg(avg("rating").alias("avg_rating"), count("rating").alias("num_ratings"))
+                                            .agg(avg("rating").alias("avg_rating"))
         
         # Order by average rating and number of ratings (to break ties) in descending order
-        top_movies = movie_ratings.orderBy(col("avg_rating").desc(), col("num_ratings").desc()) \
+        top_movies = movie_ratings.orderBy(col("avg_rating").desc()) \
                                   .limit(n)
         
         return top_movies
